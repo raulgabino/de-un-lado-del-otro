@@ -1,0 +1,10 @@
+pandas>=2.0
+geopandas>=0.14
+shapely>=2.0
+folium>=0.15
+matplotlib>=3.7
+scipy>=1.11
+pyproj>=3.6
+libpysal>=4.9
+branca>=0.7
+requests>=2.28
