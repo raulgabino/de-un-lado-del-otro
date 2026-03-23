@@ -1,8 +1,8 @@
-# De Un Lado, Del Otro — Fronteras de Desigualdad ZM Tampico
+# Cobertura Social del Sistema Integrado de Transporte — Tampico
 
-Analisis de segregacion socioeconomica a escala de AGEB en la zona metropolitana Tampico-Madero-Altamira (Tamaulipas). Genera evidencia cuantitativa y mapas interactivos para sustentar la justificacion social del Sistema Integrado de Transporte (SIT/BRT) ante FONADIN/CAF.
+Analisis de la cobertura socioeconomica del corredor BRT del SIT en la zona metropolitana Tampico-Madero-Altamira (Tamaulipas). Evalua como las estaciones del corredor conectan zonas de distinto nivel de marginacion con centros de empleo, salud, educacion y comercio, usando datos censales a nivel de AGEB.
 
-Adapta la metodologia de [Viridiana Rios](https://github.com/Viri-Rios/DeUnLado_DelOtro) — originalmente en R — a un pipeline en Python.
+Desarrollado por **Raul Gabino**.
 
 ## Zona de estudio
 
@@ -15,10 +15,35 @@ Adapta la metodologia de [Viridiana Rios](https://github.com/Viri-Rios/DeUnLado_
 
 ## Resultados principales
 
-- **127 fronteras de desigualdad** identificadas (8 extremas, 33 altas, 86 moderadas)
-- La frontera mas extrema: **17 puntos de diferencia** entre AGEBs adyacentes en Ciudad Madero
-- **62,771 personas** viven en AGEBs de muy alta marginacion (puntaje <= 5 de 20)
+- **127 contrastes socioeconomicos** detectados entre AGEBs adyacentes (8 extremos, 33 altos, 86 moderados)
+- El contraste mas extremo: **17 puntos de diferencia** (de 20) entre dos AGEBs vecinas en Ciudad Madero
+- **62,771 personas** en AGEBs de muy alta marginacion (puntaje <= 5)
 - El corredor BRT (33 estaciones) cubre el **39%** de los comercios medianos/grandes de la ZM
+- **804 establecimientos** con 11+ empleados dentro del area de influencia de 400m (~33,000 empleos)
+
+## Metodologia
+
+### Indice compuesto de nivel socioeconomico (1-20)
+
+Se construyen 15 indicadores a partir del Censo 2020 de INEGI, agrupados en dos categorias:
+
+**Indicadores de nivel alto** (mayor valor = mayor nivel socioeconomico):
+- Porcentaje de jovenes 18-24 que estudian, grado promedio de escolaridad, afiliacion a salud privada
+- Viviendas con automovil, computadora, internet, TV de paga, videojuegos
+
+**Indicadores de carencia** (mayor valor = mayor marginacion):
+- Ocupantes por cuarto, analfabetismo, primaria incompleta
+- Viviendas sin agua entubada, sin drenaje, con piso de tierra, sin electricidad
+
+Cada indicador se convierte a ventiles (1-20) usando ranking estadistico. Los indicadores de carencia se invierten para que el puntaje 20 siempre represente mejor condicion. El puntaje compuesto es el promedio de los 15 ventiles.
+
+### Deteccion de contrastes
+
+Se construye un grafo de adyacencia entre AGEBs y se calcula la diferencia de puntaje entre cada par vecino. Los pares con diferencia >= 5 se clasifican como contrastes moderados, >= 8 como altos, y >= 12 como extremos.
+
+### Cruce con DENUE y BRT
+
+Los 31,711 establecimientos del DENUE 05/2025 en la ZM se clasifican por sector economico y se cruzan espacialmente con los buffers de 400m alrededor de cada estacion BRT para cuantificar la cobertura de empleo y servicios del corredor.
 
 ## Estructura
 
@@ -27,7 +52,7 @@ src/
   utils.py                      # Constantes y funciones compartidas
   01_preparar_censo.py           # Limpieza de datos censales
   02_construir_indicadores.py    # Indice compuesto por AGEB (1-20)
-  03_fronteras_desigualdad.py    # Deteccion de pares contrastantes adyacentes
+  03_fronteras_desigualdad.py    # Deteccion de contrastes entre AGEBs adyacentes
   04_capa_denue.py               # Empleo y servicios (DENUE 05/2025)
   05_cruce_brt.py                # Cruce con estaciones del BRT
   06_mapa_interactivo.py         # Mapa Folium con todas las capas
@@ -37,7 +62,7 @@ output/
   mapa_fronteras_desigualdad.html   # Mapa interactivo (autocontenido)
   indicadores_por_ageb.csv          # 321 AGEBs con puntaje compuesto
   fronteras_identificadas.csv       # 127 pares con diferencia >= 5
-  fronteras_identificadas.gpkg      # Geometrias de lineas de frontera
+  fronteras_identificadas.gpkg      # Geometrias de lineas de contraste
   agebs_con_puntaje.gpkg            # Poligonos AGEB para GIS
   denue_ageb_resumen.csv            # Metricas de empleo por AGEB
   recomendacion_corredor_brt.csv    # Zonas prioritarias para BRT
@@ -61,15 +86,8 @@ pip install -r requirements.txt
 python src/run_pipeline.py
 ```
 
-El mapa se genera en `output/mapa_fronteras_desigualdad.html` — abrir en cualquier navegador.
+El mapa se genera en `output/mapa_fronteras_desigualdad.html`.
 
-## Metodologia
+## Deploy
 
-Se construyen 15 indicadores del Censo 2020 (8 de riqueza, 7 de carencia), cada uno convertido a ventiles (1-20). El puntaje compuesto es el promedio. Se detectan pares de AGEBs geograficamente adyacentes con diferencias extremas en puntaje (>= 12 de 20 puntos). Esto se cruza con datos de empleo del DENUE y el trazo del corredor BRT para cuantificar el impacto del transporte en la conectividad social.
-
-Ver [`CONTEXTO_PROYECTO.md`](CONTEXTO_PROYECTO.md) para la documentacion tecnica completa.
-
-## Creditos
-
-- Metodologia original: [Viridiana Rios](https://github.com/Viri-Rios/DeUnLado_DelOtro), codigo R por Lorenzo Leon Robles
-- Datos: INEGI (Censo 2020, DENUE 05/2025, Marco Geoestadistico)
+El proyecto incluye configuracion para Vercel (`vercel.json` + `public/`). Al importar el repo en Vercel se despliega automaticamente como sitio estatico con landing page y mapa interactivo.
