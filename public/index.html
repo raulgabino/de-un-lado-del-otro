@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>De Un Lado, Del Otro — Fronteras de Desigualdad ZM Tampico</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f1419;
+            color: #e7e9ea;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 720px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+        }
+        .subtitle {
+            font-size: 1.1rem;
+            color: #8b98a5;
+            margin-bottom: 2.5rem;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+        }
+        .stat {
+            background: #1c2733;
+            border-radius: 12px;
+            padding: 1.2rem 1rem;
+        }
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #f7b731;
+        }
+        .stat-number.red { color: #e74c3c; }
+        .stat-number.green { color: #2ecc71; }
+        .stat-number.blue { color: #3498db; }
+        .stat-label {
+            font-size: 0.8rem;
+            color: #8b98a5;
+            margin-top: 0.3rem;
+        }
+        .cta {
+            display: inline-block;
+            background: #1d9bf0;
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding: 0.9rem 2.5rem;
+            border-radius: 50px;
+            transition: background 0.2s;
+            margin-bottom: 2rem;
+        }
+        .cta:hover { background: #1a8cd8; }
+        .description {
+            font-size: 0.95rem;
+            color: #8b98a5;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        .footer {
+            font-size: 0.75rem;
+            color: #536471;
+            margin-top: 2rem;
+        }
+        .footer a { color: #1d9bf0; text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+        .gradient-text {
+            background: linear-gradient(90deg, #e74c3c, #f7b731, #2ecc71);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><span class="gradient-text">De Un Lado, Del Otro</span></h1>
+        <p class="subtitle">Fronteras de desigualdad en la zona metropolitana Tampico-Madero-Altamira</p>
+
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-number">747,530</div>
+                <div class="stat-label">Poblacion analizada</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">321</div>
+                <div class="stat-label">AGEBs urbanas</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number red">127</div>
+                <div class="stat-label">Fronteras de desigualdad</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number blue">33</div>
+                <div class="stat-label">Estaciones BRT</div>
+            </div>
+        </div>
+
+        <a href="mapa.html" class="cta">Explorar mapa interactivo</a>
+
+        <div class="description">
+            <p>Este analisis identifica puntos donde AGEBs geograficamente adyacentes tienen niveles
+            socioeconomicos radicalmente opuestos — <strong>fronteras de desigualdad</strong>.
+            La frontera mas extrema muestra una diferencia de 17 puntos (de 20) entre dos AGEBs
+            que comparten limite en Ciudad Madero.</p>
+            <br>
+            <p>El mapa cruza datos del Censo 2020, el DENUE 05/2025 y el trazo de 33 estaciones
+            del corredor BRT del Sistema Integrado de Transporte (SIT) para cuantificar como el
+            transporte publico puede reducir la segregacion socioeconomica.</p>
+        </div>
+
+        <div class="footer">
+            Metodologia adaptada de <a href="https://github.com/Viri-Rios/DeUnLado_DelOtro">Viridiana Rios</a>
+            &middot; Datos: INEGI
+            &middot; <a href="https://github.com/raulgabino/de-un-lado-del-otro">GitHub</a>
+        </div>
+    </div>
+</body>
+</html>
