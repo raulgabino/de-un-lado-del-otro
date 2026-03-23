@@ -89,10 +89,65 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
+
+        /* Login screen */
+        .login-screen {
+            max-width: 400px;
+            text-align: center;
+        }
+        .login-screen h1 { margin-bottom: 1rem; }
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            margin-top: 1.5rem;
+        }
+        .login-form input {
+            background: #1c2733;
+            border: 1px solid #38444d;
+            border-radius: 8px;
+            padding: 0.8rem 1rem;
+            color: #e7e9ea;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .login-form input:focus { border-color: #1d9bf0; }
+        .login-form button {
+            background: #1d9bf0;
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            padding: 0.8rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .login-form button:hover { background: #1a8cd8; }
+        .login-error {
+            color: #e74c3c;
+            font-size: 0.85rem;
+            min-height: 1.2rem;
+        }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- Login screen -->
+    <div class="login-screen" id="loginScreen">
+        <h1><span class="gradient-text">Cobertura Social del SIT</span></h1>
+        <p class="subtitle">Acceso restringido</p>
+        <form class="login-form" id="loginForm">
+            <input type="text" id="loginUser" placeholder="Usuario" autocomplete="username" required>
+            <input type="password" id="loginPass" placeholder="Contrasena" autocomplete="current-password" required>
+            <button type="submit">Ingresar</button>
+            <p class="login-error" id="loginError"></p>
+        </form>
+    </div>
+
+    <!-- Main content (hidden until login) -->
+    <div class="container hidden" id="mainContent">
         <h1><span class="gradient-text">Cobertura Social del SIT</span></h1>
         <p class="subtitle">Sistema Integrado de Transporte — Tampico, Ciudad Madero y Altamira</p>
 
@@ -137,5 +192,45 @@
             &middot; <a href="https://github.com/raulgabino/de-un-lado-del-otro">GitHub</a>
         </div>
     </div>
+
+    <script>
+    (function() {
+        // SHA-256 hash of the password — change credentials by updating these hashes
+        // Current: user="admin" pass="sit2025"
+        var USER_HASH = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918";
+        var PASS_HASH = "5ec951b2c68d4e63b575d5fc8a544dcb7d7d7651ab72a9798959b1efeafb3893";
+
+        // Simple hash function (not crypto-grade, but sufficient for client-side gate)
+        async function sha256(str) {
+            var buf = await crypto.subtle.digest('SHA-256',
+                new TextEncoder().encode(str));
+            return Array.from(new Uint8Array(buf))
+                .map(function(b) { return b.toString(16).padStart(2, '0'); })
+                .join('');
+        }
+
+        // Check if already authenticated this session
+        if (sessionStorage.getItem('sit_auth') === 'true') {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mainContent').classList.remove('hidden');
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            var user = document.getElementById('loginUser').value.trim().toLowerCase();
+            var pass = document.getElementById('loginPass').value;
+            var userHash = await sha256(user);
+            var passHash = await sha256(pass);
+
+            if (userHash === USER_HASH && passHash === PASS_HASH) {
+                sessionStorage.setItem('sit_auth', 'true');
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('mainContent').classList.remove('hidden');
+            } else {
+                document.getElementById('loginError').textContent = 'Usuario o contrasena incorrectos';
+            }
+        });
+    })();
+    </script>
 </body>
 </html>
